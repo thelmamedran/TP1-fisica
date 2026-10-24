@@ -59,123 +59,37 @@ def main():
 
     imprimir_tabla(posicion, velocidad, paso_t, cada=100)
 
-    # Coordenadas en millones de kilómetros
+    # coordenadas en millones de kilómetros
     x = [p[0] / 1e9 for p in posicion]
     y = [p[1] / 1e9 for p in posicion]
 
-    # Estilo visual
     fig, ax = plt.subplots(figsize=(10, 10))
 
     fig.patch.set_facecolor("#080D1A")
     ax.set_facecolor("#080D1A")
 
-    # Trayectoria completa
-    ax.plot(
-        x, y,
-        color="#38BDF8",
-        linewidth=2,
-        label="Trayectoria",
-        zorder=2
-    )
+    ax.plot(x, y, color="#38BDF8", linewidth=2,label="Trayectoria", zorder=2)
+    ax.scatter(x[0], y[0], color="#FFFFFF", edgecolors="#38BDF8", linewidths=2, s=90, label="Posición inicial", zorder=5)
+    ax.scatter(x[-1], y[-1], color="#FB7185" if choco else "#A78BFA", s=65, label="Posición final", zorder=5)
+    ax.scatter(0, 0, color="#FDB813", edgecolors="#FFF1A8", linewidths=2, s=300, label="Sol", zorder=6)
 
-    # Posición inicial
-    ax.scatter(
-        x[0], y[0],
-        color="#FFFFFF",
-        edgecolors="#38BDF8",
-        linewidths=2,
-        s=90,
-        label="Posición inicial",
-        zorder=5
-    )
-
-    # Posición final
-    ax.scatter(
-        x[-1], y[-1],
-        color="#FB7185" if choco else "#A78BFA",
-        s=65,
-        label="Posición final",
-        zorder=5
-    )
-
-    # Sol brillante
-    ax.scatter(
-        0, 0,
-        color="#FDB813",
-        edgecolors="#FFF1A8",
-        linewidths=2,
-        s=300,
-        label="Sol",
-        zorder=6
-    )
-
-    # Anotación si ocurre un choque
     if choco:
-        ax.annotate(
-            f"¡Choque con el Sol!\nDía {dias_choque:.2f}",
-            xy=(x[-1], y[-1]),
-            xytext=(0.05, 0.92),
-            textcoords="axes fraction",
-            color="#FB7185",
-            fontsize=11,
-            fontweight="bold",
-            arrowprops=dict(
-                arrowstyle="->",
-                color="#FB7185",
-                linewidth=1.5
-            )
+        ax.annotate( f"Choque con el Sol\nDía {dias_choque:.2f}", xy=(x[-1], y[-1]), xytext=(0.05, 0.92), textcoords="axes fraction", color="#FB7185",
+            fontsize=11, fontweight="bold", arrowprops=dict(arrowstyle="->", color="#FB7185", linewidth=1.5)
         )
 
-    # Título y etiquetas
-    ax.set_title(
-        "ÓRBITA TERRESTRE",
-        color="white",
-        fontsize=20,
-        fontweight="bold",
-        pad=22
-    )
-
-    ax.set_xlabel(
-        "Posición X (millones de km)",
-        color="#CBD5E1",
-        fontsize=12
-    )
-
-    ax.set_ylabel(
-        "Posición Y (millones de km)",
-        color="#CBD5E1",
-        fontsize=12
-    )
-
-    # Misma escala en los dos ejes
+    ax.set_title("ÓRBITA TERRESTRE", color="white", fontsize=20, fontweight="bold", pad=22)
+    ax.set_xlabel( "Posición X (millones de km)", color="#CBD5E1", fontsize=12)
+    ax.set_ylabel("Posición Y (millones de km)", color="#CBD5E1", fontsize=12)
     ax.set_aspect("equal", adjustable="datalim")
-
-    # Márgenes automáticos para no cortar la trayectoria
     ax.margins(0.15)
-
-    # Cuadrícula sutil
-    ax.grid(
-        True,
-        color="#64748B",
-        linestyle="--",
-        linewidth=0.7,
-        alpha=0.25
-    )
-
-    # Colores de los ejes y números
+    ax.grid(True, color="#64748B", linestyle="--", linewidth=0.7,alpha=0.25)
     ax.tick_params(colors="#CBD5E1", labelsize=10)
 
     for borde in ax.spines.values():
         borde.set_color("#334155")
 
-    # Leyenda
-    leyenda = ax.legend(
-        loc="upper right",
-        facecolor="#111827",
-        edgecolor="#334155",
-        fontsize=10,
-        framealpha=0.95
-    )
+    leyenda = ax.legend(loc="upper right", facecolor="#111827", edgecolor="#334155", fontsize=10, framealpha=0.95)
 
     for texto in leyenda.get_texts():
         texto.set_color("white")
