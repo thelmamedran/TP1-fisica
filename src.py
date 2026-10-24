@@ -5,7 +5,8 @@ MSOL = 1.989e30
 MTIERRA = 5.972e24
 R_SOL = 6.96e8
 CTE_GRAVITACIONAL = 6.674e-11
-
+CANT_SEGUNDOS_POR_PASO = 3600
+CANT_PASOS = 10000
 def imprimir_tabla(posicion, velocidad, paso_t, cada=100):
     print(f"{'t (s)':>12} {'t (días)':>10} {'x (m)':>14} {'y (m)':>14} {'vx (m/s)':>14} {'vy (m/s)':>14}")
     print("-" * 84)
@@ -26,15 +27,14 @@ def main():
     v0y = int(input("Ingresa la componente y de la velocidad inicial: "))
     vel_inicial = (v0x, v0y)
     choco = False
-    paso_t = 3600
-    cantidad_pasos = 10000
+    paso_t = CANT_SEGUNDOS_POR_PASO
     posicion = []
     velocidad = []
 
     posicion.append(pos_inicial)
     velocidad.append(vel_inicial)
 
-    for i in range(1,cantidad_pasos):
+    for i in range(1,CANT_PASOS):
 
         modulo_r_ant = math.sqrt(posicion[i - 1][0]**2 + posicion[i - 1][1]**2)
         vix = velocidad[i - 1][0] + -CTE_GRAVITACIONAL*MSOL*posicion[i - 1][0]*paso_t/modulo_r_ant**3
