@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-from matplotlib.patches import Circle   # arriba, con los imports
 import math
 
 MSOL = 1.989e30
