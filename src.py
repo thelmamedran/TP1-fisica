@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from matplotlib.patches import Circle   # arriba, con los imports
 import math
 
 MSOL = 1.989e30
@@ -19,10 +20,12 @@ def imprimir_tabla(posicion, velocidad, paso_t, cada=100):
             print(f"{t:12.0f} {t/86400:10.2f} {x:14.4e} {y:14.4e} {vx:14.4e} {vy:14.4e}")
 
 def main():
+    print("Posicion recomendada: (149600000000, 0)")
     r0x = int(input("Ingresa la componente x de la posicion inicial: "))
     r0y = int(input("Ingresa la componente y de la posicion inicial: "))
     pos_inicial = (r0x, r0y)
 
+    print("Velocidad recomendada: (0, 29780)")
     v0x = int(input("Ingresa la componente x de la velocidad inicial: "))
     v0y = int(input("Ingresa la componente y de la velocidad inicial: "))
     vel_inicial = (v0x, v0y)
@@ -56,28 +59,128 @@ def main():
 
     imprimir_tabla(posicion, velocidad, paso_t, cada=100)
 
-    x, y = zip(*posicion)
+    # Coordenadas en millones de kilómetros
+    x = [p[0] / 1e9 for p in posicion]
+    y = [p[1] / 1e9 for p in posicion]
 
-    plt.figure(figsize=(7, 7))
-    plt.plot(x, y, label="Órbita de la Tierra", color="blue")
-    plt.plot(0, 0, 'ro', markersize=8, label="Sol")
+    # Estilo visual
+    fig, ax = plt.subplots(figsize=(10, 10))
 
+    fig.patch.set_facecolor("#080D1A")
+    ax.set_facecolor("#080D1A")
+
+    # Trayectoria completa
+    ax.plot(
+        x, y,
+        color="#38BDF8",
+        linewidth=2,
+        label="Trayectoria",
+        zorder=2
+    )
+
+    # Posición inicial
+    ax.scatter(
+        x[0], y[0],
+        color="#FFFFFF",
+        edgecolors="#38BDF8",
+        linewidths=2,
+        s=90,
+        label="Posición inicial",
+        zorder=5
+    )
+
+    # Posición final
+    ax.scatter(
+        x[-1], y[-1],
+        color="#FB7185" if choco else "#A78BFA",
+        s=65,
+        label="Posición final",
+        zorder=5
+    )
+
+    # Sol brillante
+    ax.scatter(
+        0, 0,
+        color="#FDB813",
+        edgecolors="#FFF1A8",
+        linewidths=2,
+        s=300,
+        label="Sol",
+        zorder=6
+    )
+
+    # Anotación si ocurre un choque
     if choco:
-        # marca el punto del choque y escribe el mensaje en el gráfico
-        plt.annotate(f"¡Choque con el Sol!\n(~{dias_choque:.1f} días)",
-                     xy=(x[-1], y[-1]),
-                     xytext=(0.05, 0.92), textcoords="axes fraction",
-                     fontsize=12, color="red", fontweight="bold",
-                     arrowprops=dict(arrowstyle="->", color="red"))
-        plt.title("Simulación de la Órbita Terrestre")
-    else:
-        plt.title("Simulación de la Órbita Terrestre")
+        ax.annotate(
+            f"¡Choque con el Sol!\nDía {dias_choque:.2f}",
+            xy=(x[-1], y[-1]),
+            xytext=(0.05, 0.92),
+            textcoords="axes fraction",
+            color="#FB7185",
+            fontsize=11,
+            fontweight="bold",
+            arrowprops=dict(
+                arrowstyle="->",
+                color="#FB7185",
+                linewidth=1.5
+            )
+        )
 
-    plt.xlabel("x (m)")
-    plt.ylabel("y (m)")
-    plt.legend()
-    plt.grid(True)
-    plt.axis('equal')
+    # Título y etiquetas
+    ax.set_title(
+        "ÓRBITA TERRESTRE",
+        color="white",
+        fontsize=20,
+        fontweight="bold",
+        pad=22
+    )
+
+    ax.set_xlabel(
+        "Posición X (millones de km)",
+        color="#CBD5E1",
+        fontsize=12
+    )
+
+    ax.set_ylabel(
+        "Posición Y (millones de km)",
+        color="#CBD5E1",
+        fontsize=12
+    )
+
+    # Misma escala en los dos ejes
+    ax.set_aspect("equal", adjustable="datalim")
+
+    # Márgenes automáticos para no cortar la trayectoria
+    ax.margins(0.15)
+
+    # Cuadrícula sutil
+    ax.grid(
+        True,
+        color="#64748B",
+        linestyle="--",
+        linewidth=0.7,
+        alpha=0.25
+    )
+
+    # Colores de los ejes y números
+    ax.tick_params(colors="#CBD5E1", labelsize=10)
+
+    for borde in ax.spines.values():
+        borde.set_color("#334155")
+
+    # Leyenda
+    leyenda = ax.legend(
+        loc="upper right",
+        facecolor="#111827",
+        edgecolor="#334155",
+        fontsize=10,
+        framealpha=0.95
+    )
+
+    for texto in leyenda.get_texts():
+        texto.set_color("white")
+
+    plt.tight_layout()
     plt.show()
 
 if __name__ == "__main__":
